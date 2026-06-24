@@ -188,6 +188,7 @@ func main() {
 
 	InjectUmamiAnalytics()
 	InjectGoogleAnalytics()
+	InjectHermesLivechat()
 
 	// 设置路由
 	router.SetRouter(server, router.ThemeAssets{
@@ -253,6 +254,19 @@ func InjectGoogleAnalytics() {
 	placeholder := []byte("<!--Google Analytics-->\n")
 	indexPage = bytes.ReplaceAll(indexPage, placeholder, analyticsInject)
 	classicIndexPage = bytes.ReplaceAll(classicIndexPage, placeholder, analyticsInject)
+}
+
+// InjectHermesLivechat injects the Hermes Omni livechat widget into the index
+// pages.
+func InjectHermesLivechat() {
+	livechatInjectBuilder := &strings.Builder{}
+	livechatInjectBuilder.WriteString("<script>window.HermesLivechatSettings = {baseURL: 'https://wise.hermesomni.com/api', siteId: '019ef92d81f9761e83af6f4ff195275b'};</script>")
+	livechatInjectBuilder.WriteString("<script async src=\"https://wise.hermesomni.com/api/api/livechat/v1/widget.js\"></script>")
+	livechatInjectBuilder.WriteString("<!--Livechat QuantumNous-->\n")
+	livechatInject := []byte(livechatInjectBuilder.String())
+	placeholder := []byte("<!--livechat-->\n")
+	indexPage = bytes.ReplaceAll(indexPage, placeholder, livechatInject)
+	classicIndexPage = bytes.ReplaceAll(classicIndexPage, placeholder, livechatInject)
 }
 
 func InitResources() error {
